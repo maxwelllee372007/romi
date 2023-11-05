@@ -6,16 +6,6 @@
       }
     },
     "Encoders": {
-      "0": {
-        "header": {
-          "open": true
-        }
-      },
-      "1": {
-        "header": {
-          "open": true
-        }
-      },
       "window": {
         "visible": true
       }
@@ -26,18 +16,6 @@
       }
     },
     "RoboRIO": {
-      "3.3V Rail": {
-        "open": true
-      },
-      "5V Rail": {
-        "open": true
-      },
-      "6V Rail": {
-        "open": true
-      },
-      "RoboRIO Input": {
-        "open": true
-      },
       "window": {
         "visible": true
       }
@@ -48,6 +26,7 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/RomiDrivetrain": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
     }
   },
