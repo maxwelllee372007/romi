@@ -20,6 +20,8 @@ public final class Constants {
     int gateZoneRow3[] = {0,0,0,0};
     int gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
   }
+  // cm
+  int fieldSquareLength = 50;
   
   
 }
