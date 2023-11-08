@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -26,10 +28,11 @@ public class RomiDrivetrain extends SubsystemBase {
   private final Encoder m_rightEncoder = new Encoder(6, 7);
 
   private final DigitalInput button = new DigitalInput(8);
-
+  
 
   // Set up the differential drive controller
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+  private final DifferentialDriveOdometry odometer = new DifferentialDriveOdometry(null, 0, 0);
 
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
@@ -63,9 +66,18 @@ public class RomiDrivetrain extends SubsystemBase {
     return !button.get();
   }
 
+  public void resetOdometry() {
+    resetEncoders();
+    odometer.resetPosition(null, 0, 0, null);
+  }
+
+  public Pose2d getPose() {
+    return odometer.getPoseMeters();
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    odometer.update(null, getLeftDistanceInch(), getRightDistanceInch());
   }
 
   @Override
