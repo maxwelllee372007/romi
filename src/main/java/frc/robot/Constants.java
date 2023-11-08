@@ -12,4 +12,16 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+  public final class Runtime{
+    int gateZoneRow0[] = {0,0,0,0};
+    int gateZoneRow1[] = {0,0,0,0};
+    int gateZoneRow2[] = {0,0,0,0};
+    int gateZoneRow3[] = {0,0,0,0};
+    int gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
+  }
+  // cm
+  int fieldSquareLength = 50;
+  
+  
+}
