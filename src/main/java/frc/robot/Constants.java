@@ -18,10 +18,10 @@ public final class Constants {
     int gateZoneRow1[] = {0,0,0,0};
     int gateZoneRow2[] = {0,0,0,0};
     int gateZoneRow3[] = {0,0,0,0};
-    int gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
+    public int gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
   }
   // cm
-  int fieldSquareLength = 50;
+  public static int fieldSquareLength = 50;
   
   
 }

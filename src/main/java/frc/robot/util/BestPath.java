@@ -7,14 +7,10 @@ import java.util.PriorityQueue;
 import edu.wpi.first.math.Pair;
 import frc.robot.Constants;
 
-import edu.wpi.first.math.geometry.Pose2d;
 
 public abstract class BestPath {
-  // Returns a queue containing a Pose2d and a double
-  // The Pose2d is a vector that points from the end point of the previous Pose2d (or the starting point for the first one) to the next end point
-  // The double is the proportion of the total distance that this is, which you can use to calculate the time that should be spent on this path
-  public Queue<Pair<Pose2d,Double>> getBestPath(boolean gateZones[][], Point2D.Double start, Point2D.Double end, double time){
-    Queue<Pair<Pose2d,Double>> path = new PriorityQueue<Pair<Pose2d,Double>>();
+  public Pair<Queue<Point2D.Double>,Double> getBestPath(boolean gateZones[][], Point2D.Double start, Point2D.Double end, double time){
+    Queue<Point2D.Double> path = new PriorityQueue<Point2D.Double>();
     ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
     points.add(start);
     int gatesLeft;
@@ -42,10 +38,10 @@ public abstract class BestPath {
     for (int i = 0; i < points.size() - 1; i++){
       totalDistance += points.get(i).distance(points.get(i+1));
     }
-    for (int i = 0; i < points.size() - 1; i++){
-      //Make poses in here
+    for (int i = 1; i < points.size() - 1; i++){
+      Point2D.Double scaledPoint = new Point2D.Double(points.get(i).getX()*Constants.fieldSquareLength,points.get(i).getY()*Constants.fieldSquareLength);
+      path.add(scaledPoint);
     }
-    // Get best path from the info in the class and push each Pose2d of the wanted targets to the queue in the data structure
-    return path;
+    return new Pair<Queue<Point2D.Double>,Double>(path,totalDistance);
   }
 };

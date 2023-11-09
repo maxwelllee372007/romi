@@ -5,13 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.romi;
 
 public class RomiDrivetrain extends SubsystemBase {
   private static final double kCountsPerRevolution = 1440.0;
@@ -32,7 +33,8 @@ public class RomiDrivetrain extends SubsystemBase {
 
   // Set up the differential drive controller
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
-  private final DifferentialDriveOdometry odometer = new DifferentialDriveOdometry(null, 0, 0);
+  private final DifferentialDriveOdometry odometer = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
+  private final RomiGyro gyro = new RomiGyro();
 
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
@@ -47,6 +49,11 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+  }
+
+  public void rotate(Rotation2d rotation){
+    while(true){
+    }
   }
 
   public void resetEncoders() {
