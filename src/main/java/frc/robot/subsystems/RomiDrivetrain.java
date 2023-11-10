@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.core.RotatedRect;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -62,50 +64,14 @@ public class RomiDrivetrain extends SubsystemBase {
     m_diffDrive.arcadeDrive(0, 0);
   }
 
-  public void rotate(Rotation2d absoluteRotation, double speed) {
-    double zRotate = absoluteRotation.minus(getAbsoluteAngle()).getRadians() > 0 ? 1.0 : 0.0;
-    double initialDiff = Math.abs(absoluteRotation.minus(getAbsoluteAngle()).getRadians());
-    arcadeDrive(speed, zRotate);
-    while (Math.abs(getAbsoluteAngle().minus(absoluteRotation).getRadians()) > 0.01) {
-      double newDiff = Math.abs(absoluteRotation.minus(getAbsoluteAngle()).getRadians());
-      arcadeDrive(speed, zRotate * (newDiff / initialDiff));
-    }
-    stop();
-  }
-
-  public void rotate(Rotation2d absoluteRotation) {
-    rotate(absoluteRotation, 0);
-  }
-
-  public void gotoPoint(Translation2d path, double time) {
-    Timer start = new Timer();
-    start.start();
-    rotate(path.getAngle());
-    travelDistance(path.getNorm(), time - start.get());
-
-  }
-
-  public void travelDistance(double meters, double time) {
-    Timer start = new Timer();
-    start.start();
-    Pose2d initial = odometer.getPoseMeters();
-    double speed;
-    do {
-      Pose2d current = odometer.getPoseMeters();
-      speed = (current.minus(initial).getTranslation().getNorm()) / (time - start.get());
-      drive(speed);
-    } while (Math.abs(odometer.getPoseMeters().minus(initial).getX()) > 0.005
-        && Math.abs(odometer.getPoseMeters().minus(initial).getX()) > 0.005);
-    stop();
-  }
-
   public Rotation2d getAbsoluteAngle() {
-    return gyro.getRotation2d();
+    return gyro.getRotation2d().plus(new Rotation2d(.5*Math.PI));
   }
 
   public void resetEncoders() {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
+    resetOdometry();
   }
 
   public double getLeftDistanceMeters() {

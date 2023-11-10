@@ -9,8 +9,8 @@ import frc.robot.Constants;
 
 
 public abstract class BestPath {
-  public Pair<Queue<Point2D.Double>,Double> getBestPath(boolean gateZones[][], Point2D.Double start, Point2D.Double end, double time){
-    Queue<Point2D.Double> path = new PriorityQueue<Point2D.Double>();
+  public static Pair<ArrayList<Point2D.Double>,Double> getBestPath(boolean gateZones[][], Point2D.Double start, Point2D.Double end, double time){
+    ArrayList<Point2D.Double> path = new ArrayList<Point2D.Double>();
     ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
     points.add(start);
     int gatesLeft;
@@ -42,6 +42,6 @@ public abstract class BestPath {
       Point2D.Double scaledPoint = new Point2D.Double(points.get(i).getX()*Constants.fieldSquareLength,points.get(i).getY()*Constants.fieldSquareLength);
       path.add(scaledPoint);
     }
-    return new Pair<Queue<Point2D.Double>,Double>(path,totalDistance);
+    return new Pair<ArrayList<Point2D.Double>,Double>(path,totalDistance);
   }
 };
