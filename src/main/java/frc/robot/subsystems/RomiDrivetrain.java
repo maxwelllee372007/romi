@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
 
 public class RomiDrivetrain extends SubsystemBase {
@@ -65,7 +66,7 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public Rotation2d getAbsoluteAngle() {
-    return gyro.getRotation2d().plus(new Rotation2d(.5*Math.PI));
+    return gyro.getRotation2d().plus(new Rotation2d(.5 * Math.PI));
   }
 
   public void resetEncoders() {
@@ -89,7 +90,7 @@ public class RomiDrivetrain extends SubsystemBase {
   public void resetOdometry() {
     gyro.reset();
     resetEncoders();
-    odometer.resetPosition(null, 0, 0, null);
+    odometer.resetPosition(getAbsoluteAngle(), 0, 0, Constants.startingPose);
   }
 
   public Pose2d getPose() {
