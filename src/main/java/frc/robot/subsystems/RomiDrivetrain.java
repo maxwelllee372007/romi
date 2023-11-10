@@ -41,8 +41,8 @@ public class RomiDrivetrain extends SubsystemBase {
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
     // Use inches as unit for encoder distances
-    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
-    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
+    m_leftEncoder.setDistancePerPulse((Math.PI * .070) / kCountsPerRevolution);
+    m_rightEncoder.setDistancePerPulse((Math.PI * .070) / kCountsPerRevolution);
     resetEncoders();
 
     // Invert right side since motor is flipped
@@ -50,36 +50,53 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+    m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate, false);
+  }
+
+  // Speed in meters/second
+  public void drive(double speed) {
+    arcadeDrive(speed * 1.81891365, 0);
   }
 
   public void stop() {
     m_diffDrive.arcadeDrive(0, 0);
   }
 
-  public void rotate(Rotation2d absoluteRotation) {
+  public void rotate(Rotation2d absoluteRotation, double speed) {
     double zRotate = absoluteRotation.minus(getAbsoluteAngle()).getRadians() > 0 ? 1.0 : 0.0;
     double initialDiff = Math.abs(absoluteRotation.minus(getAbsoluteAngle()).getRadians());
-    arcadeDrive(0, zRotate);
+    arcadeDrive(speed, zRotate);
     while (Math.abs(getAbsoluteAngle().minus(absoluteRotation).getRadians()) > 0.01) {
       double newDiff = Math.abs(absoluteRotation.minus(getAbsoluteAngle()).getRadians());
-      arcadeDrive(0, zRotate * (newDiff / initialDiff));
+      arcadeDrive(speed, zRotate * (newDiff / initialDiff));
     }
+    stop();
+  }
+
+  public void rotate(Rotation2d absoluteRotation) {
+    rotate(absoluteRotation, 0);
   }
 
   public void gotoPoint(Translation2d path, double time) {
     Timer start = new Timer();
+    start.start();
     rotate(path.getAngle());
-    travelDistance(path.getNorm(), start.get());
+    travelDistance(path.getNorm(), time - start.get());
 
   }
 
   public void travelDistance(double meters, double time) {
-
-  }
-
-  public void resetGyro() {
-    gyro.reset();
+    Timer start = new Timer();
+    start.start();
+    Pose2d initial = odometer.getPoseMeters();
+    double speed;
+    do {
+      Pose2d current = odometer.getPoseMeters();
+      speed = (current.minus(initial).getTranslation().getNorm()) / (time - start.get());
+      drive(speed);
+    } while (Math.abs(odometer.getPoseMeters().minus(initial).getX()) > 0.005
+        && Math.abs(odometer.getPoseMeters().minus(initial).getX()) > 0.005);
+    stop();
   }
 
   public Rotation2d getAbsoluteAngle() {
@@ -91,11 +108,11 @@ public class RomiDrivetrain extends SubsystemBase {
     m_rightEncoder.reset();
   }
 
-  public double getLeftDistanceInch() {
+  public double getLeftDistanceMeters() {
     return m_leftEncoder.getDistance();
   }
 
-  public double getRightDistanceInch() {
+  public double getRightDistanceMeters() {
     return m_rightEncoder.getDistance();
   }
 
@@ -104,6 +121,7 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public void resetOdometry() {
+    gyro.reset();
     resetEncoders();
     odometer.resetPosition(null, 0, 0, null);
   }
@@ -114,7 +132,7 @@ public class RomiDrivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    odometer.update(null, getLeftDistanceInch(), getRightDistanceInch());
+    odometer.update(getAbsoluteAngle(), getLeftDistanceMeters(), getLeftDistanceMeters());
   }
 
   @Override
