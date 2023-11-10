@@ -6,9 +6,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,12 +32,11 @@ public class RomiDrivetrain extends SubsystemBase {
   private final Encoder m_rightEncoder = new Encoder(6, 7);
 
   private final DigitalInput button = new DigitalInput(8);
-  
 
   // Set up the differential drive controller
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
-  private final DifferentialDriveOdometry odometer = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
   private final RomiGyro gyro = new RomiGyro();
+  private final DifferentialDriveOdometry odometer = new DifferentialDriveOdometry(gyro.getRotation2d(), 0, 0);
 
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
@@ -51,9 +53,37 @@ public class RomiDrivetrain extends SubsystemBase {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
 
-  public void rotate(Rotation2d rotation){
-    while(true){
+  public void stop() {
+    m_diffDrive.arcadeDrive(0, 0);
+  }
+
+  public void rotate(Rotation2d absoluteRotation) {
+    double zRotate = absoluteRotation.minus(getAbsoluteAngle()).getRadians() > 0 ? 1.0 : 0.0;
+    double initialDiff = Math.abs(absoluteRotation.minus(getAbsoluteAngle()).getRadians());
+    arcadeDrive(0, zRotate);
+    while (Math.abs(getAbsoluteAngle().minus(absoluteRotation).getRadians()) > 0.01) {
+      double newDiff = Math.abs(absoluteRotation.minus(getAbsoluteAngle()).getRadians());
+      arcadeDrive(0, zRotate * (newDiff / initialDiff));
     }
+  }
+
+  public void gotoPoint(Translation2d path, double time) {
+    Timer start = new Timer();
+    rotate(path.getAngle());
+    travelDistance(path.getNorm(), start.get());
+
+  }
+
+  public void travelDistance(double meters, double time) {
+
+  }
+
+  public void resetGyro() {
+    gyro.reset();
+  }
+
+  public Rotation2d getAbsoluteAngle() {
+    return gyro.getRotation2d();
   }
 
   public void resetEncoders() {
