@@ -28,17 +28,19 @@ public final class Constants {
     // static boolean gateZoneRow2[] = {false,false,false,false};
     // static boolean gateZoneRow0[] = {false,false,false,false};
     // static boolean gateZoneRow3[] = {false,false,false,false};
+    public static Point2D.Double gateZonePath[] = {yes(3.5,0.5),yes(2.5,0.5),yes(2.5,2.5),yes(3.5,2.5),yes(3.5,3.5)};
     // public static boolean gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
-    public static Point2D.Double gateZonePath[] = {};
-    public static double time = 20;
-    public static Point2D.Double start = new Point2D.Double(1.5, 0);
-    public static Point2D.Double end = new Point2D.Double(1.5,3.5);
+    //public static Point2D.Double gateZonePath[] = {yes(3.5, 0.5),yes(1.5,.5),yes(1.5,1.5),yes(1.5,.5),yes(2.5,.5),yes(2.5,1.5),yes(3.5,1.5),yes(2.5,1.5),yes(2.5,2.5),yes(.5,2.5),yes(.5,3.5),yes(.5,2.5),yes(1.5,2.5),yes(1.5,3.5)};
+    public static double time = 60;
+    public static Point2D.Double start = new Point2D.Double(3.5, -0.1);
+    public static Point2D.Double end = new Point2D.Double(2.7,3.5);
   }
   // m
   public static double fieldSquareLength = 0.5;
-  public static double turningScale = 0.4 * 0.9;
+  public static double turningScale = 0.5;
+  public static double maxTurningSpeed = 0.35;
   public static double wallDistMeters = Runtime.start.getX()/2;
-  public static Pose2d startingPose = new Pose2d(new Translation2d(wallDistMeters,0), new Rotation2d(.5*Math.PI));
+  public static Pose2d startingPose = new Pose2d(new Translation2d(wallDistMeters,-0.1), new Rotation2d(.5*Math.PI));
   
   
 }

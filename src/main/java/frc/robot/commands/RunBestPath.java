@@ -11,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Queue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -63,15 +64,17 @@ public class RunBestPath extends CommandBase {
       Point2D target = path.get(currentIndex);
       Translation2d target2 = new Translation2d(target.getX(), target.getY());
       Translation2d dist = m_subsystem.getPose().getTranslation().minus(target2).div(-1);
-      if (dist.getNorm() < 0.05) {
+      if (dist.getNorm() < 0.02) {
         currentIndex++;
         var temp = m_subsystem.getPose().getTranslation();
         System.out.println("Turning\nx: " + temp.getX() + " y: " + temp.getY());
       } else {
         double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
         double setZ = angleDiff * Constants.turningScale;
-        m_subsystem.drive(totalDistance/Constants.Runtime.time, setZ);
-        m_subsystem.arcadeDrive(0.5, setZ);
+        setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
+        // setZ = Math.abs(setZ) > Constants.maxTurningSpeed && setZ < 0 ? -Constants.maxTurningSpeed : (Math.abs(setZ) > Constants.turningScale && setZ > 0) ? ;
+        // m_subsystem.drive(totalDistance/Constants.Runtime.time, setZ);
+        m_subsystem.arcadeDrive(0.1, setZ);
         System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
         System.out.println("x: "+dist.getX()+" y: "+dist.getY());
         System.out.println("set Z:" + setZ);
