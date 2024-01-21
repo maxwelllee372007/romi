@@ -16,17 +16,23 @@ import edu.wpi.first.math.geometry.Translation2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public final class Runtime{
-    int gateZoneRow0[] = {0,0,0,0};
-    int gateZoneRow1[] = {0,0,0,0};
-    int gateZoneRow2[] = {0,0,0,0};
-    int gateZoneRow3[] = {0,0,0,0};
-    public int gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
+  public static final class Runtime{
+    static boolean gateZoneRow1[] = {false,false,false,false};
+    static boolean gateZoneRow2[] = {false,false,false,false};
+    static boolean gateZoneRow0[] = {false,false,false,false};
+    static boolean gateZoneRow3[] = {false,false,false,false};
+    public static boolean gateZones[][] = {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
+    public static double time = 60;
   }
-  // cm
-  public static int fieldSquareLength = 50;
-  public static double wallDistMeters = 0;
-  public static Pose2d startingPose = new Pose2d(new Translation2d(0, wallDistMeters),null);
+  // // cm
+  // public static int fieldSquareLength = 50;
+  // public static double wallDistMeters = 0;
+  // public static Pose2d startingPose = new Pose2d(new Translation2d(0, wallDistMeters),null);
+  // m
+  public static double fieldSquareLength = 0.5;
+  public static double turningScale = 1/Math.PI;
+  public static double wallDistMeters = 0.75;
+  public static Pose2d startingPose = new Pose2d(new Translation2d(0,wallDistMeters),null);
   
   
 }

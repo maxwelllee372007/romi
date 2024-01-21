@@ -5,16 +5,29 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.RomiDrivetrain;
+import frc.robot.util.BestPath;
+
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Queue;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 
 /** An example command that uses an example subsystem. */
 public class RunBestPath extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final RomiDrivetrain m_subsystem;
   private boolean start = false;
-  private double startTime = 0;
+  private Timer startTime;
+  private ArrayList<Point2D.Double> path;
+  private double totalDistance, distanceRemaining;
+  private int currentIndex = 0;
 
   /**
    * Creates a new ExampleCommand.
@@ -36,19 +49,33 @@ public class RunBestPath extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_subsystem.getButton()) {
+    if (!start && m_subsystem.getButton()) {
       start = true;
-      startTime = DriverStation.getMatchTime();
+      startTime = new Timer();
+      startTime.start();
+      var temp = BestPath.getBestPath(Constants.Runtime.gateZones, null, null, Constants.Runtime.time);
+      path = temp.getFirst();
+      totalDistance = temp.getSecond();
+      distanceRemaining = totalDistance;
     }
     if (start) {
-      double elapsedTime = DriverStation.getMatchTime() - startTime;
-      m_subsystem.arcadeDrive(1, 0);
+      Point2D target = path.get(currentIndex);
+      Translation2d target2 = new Translation2d(target.getX(), target.getY());
+      Translation2d dist = m_subsystem.getPose().getTranslation().minus(target2);
+      if (dist.getNorm() < 0.05) {
+        currentIndex++;
+      } else {
+        double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
+        m_subsystem.arcadeDrive(.5, angleDiff * Constants.turningScale);
+      }
+
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
