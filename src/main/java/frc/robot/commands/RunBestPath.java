@@ -4,31 +4,27 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.RomiDrivetrain;
-import frc.robot.util.BestPath;
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Queue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.subsystems.RomiDrivetrain;
+import frc.robot.util.BestPath;
 
 /** An example command that uses an example subsystem. */
 public class RunBestPath extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final RomiDrivetrain m_subsystem;
-  private boolean start = false;
+  private boolean startRunning = false;
   private Timer startTime;
   private ArrayList<Point2D.Double> path;
   private double totalDistance, distanceRemaining;
   private int currentIndex = 1;
+  private boolean bigTurn = false;
 
   /**
    * Creates a new ExampleCommand.
@@ -50,34 +46,38 @@ public class RunBestPath extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!start && m_subsystem.getButton()) {
-      start = true;
+    if (!startRunning && m_subsystem.getButton()) {
       startTime = new Timer();
       startTime.start();
-      var temp = BestPath.getBestPath(Constants.Runtime.gateZonePath, Constants.Runtime.start, Constants.Runtime.end, Constants.Runtime.time);
+      String dirs = Constants.Runtime.basePath;
+      var gateZonePath = Constants.conversion(dirs);
+      var temp = BestPath.getBestPath(gateZonePath, Constants.Runtime.start, Constants.Runtime.end, Constants.Runtime.time);
+      System.out.println(temp);
       path = temp.getFirst();
       System.out.println(path);
       totalDistance = temp.getSecond();
       distanceRemaining = totalDistance;
+      startRunning = true;
     }
-    if (start) {
+    if (startRunning && !m_subsystem.getButton()) {
       Point2D target = path.get(currentIndex);
       Translation2d target2 = new Translation2d(target.getX(), target.getY());
       Translation2d dist = m_subsystem.getPose().getTranslation().minus(target2).div(-1);
-      if (dist.getNorm() < 0.02) {
+      if (dist.getNorm() < 0.05) {
         currentIndex++;
         var temp = m_subsystem.getPose().getTranslation();
         System.out.println("Turning\nx: " + temp.getX() + " y: " + temp.getY());
-      } else {
+      } else if (bigTurn) {
+      }else {
         double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
         double setZ = angleDiff * Constants.turningScale;
         setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
         // setZ = Math.abs(setZ) > Constants.maxTurningSpeed && setZ < 0 ? -Constants.maxTurningSpeed : (Math.abs(setZ) > Constants.turningScale && setZ > 0) ? ;
-        // m_subsystem.drive(totalDistance/Constants.Runtime.time, setZ);
-        m_subsystem.arcadeDrive(0.1, setZ);
-        System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
-        System.out.println("x: "+dist.getX()+" y: "+dist.getY());
-        System.out.println("set Z:" + setZ);
+        m_subsystem.drive((8.0/6.0)*totalDistance/Constants.Runtime.time, setZ);
+        // m_subsystem.arcadeDrive(0.5, setZ);
+        // System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
+        // System.out.println("x: "+dist.getX()+" y: "+dist.getY());
+        // System.out.println("set Z:" + setZ);
       }
 
     }

@@ -4,21 +4,16 @@
 
 package frc.robot.subsystems;
 
-import org.opencv.core.RotatedRect;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.romi.RomiGyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.romi.RomiGyro;
 
 public class RomiDrivetrain extends SubsystemBase {
   private static final double kCountsPerRevolution = 1440.0;
@@ -46,7 +41,7 @@ public class RomiDrivetrain extends SubsystemBase {
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * .070) / kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * .070) / kCountsPerRevolution);
-    resetEncoders();
+    resetOdometry();
 
     // Invert right side since motor is flipped
     m_rightMotor.setInverted(true);
@@ -54,7 +49,7 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate, false);
-    System.out.println("movement speed: " + xaxisSpeed);
+    // System.out.println("movement speed: " + xaxisSpeed);
   }
 
   // Speed in meters/second
@@ -73,7 +68,6 @@ public class RomiDrivetrain extends SubsystemBase {
   public void resetEncoders() {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
-    resetOdometry();
   }
 
   public double getLeftDistanceMeters() {
@@ -91,7 +85,7 @@ public class RomiDrivetrain extends SubsystemBase {
   public void resetOdometry() {
     gyro.reset();
     resetEncoders();
-    odometer.resetPosition(getAbsoluteAngle(), 0, 0, Constants.startingPose);
+    odometer.resetPosition(getAbsoluteAngle(), 0, 0, Constants.Runtime.startingPose);
   }
 
   public Pose2d getPose() {
@@ -100,11 +94,12 @@ public class RomiDrivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    odometer.update(getAbsoluteAngle(), getLeftDistanceMeters(), getLeftDistanceMeters());
+    odometer.update(getAbsoluteAngle(), getLeftDistanceMeters(), getRightDistanceMeters());
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    odometer.update(getAbsoluteAngle(), getLeftDistanceMeters(), getRightDistanceMeters());
   }
 }

@@ -1,9 +1,8 @@
 package frc.robot.util;
 
 import java.awt.geom.Point2D;
-import java.util.Queue;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
+
 import edu.wpi.first.math.Pair;
 import frc.robot.Constants;
 
@@ -12,10 +11,12 @@ public abstract class BestPath {
   public static Pair<ArrayList<Point2D.Double>,Double> getBestPath(Point2D.Double gateZonePath[], Point2D.Double start, Point2D.Double end, double time){
     ArrayList<Point2D.Double> path = new ArrayList<Point2D.Double>();
     ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
-    points.add(start);
+    points.add((Point2D.Double) start.clone());
+    System.out.println("hi");
     for (int i = 0; i < gateZonePath.length; i++){
       points.add(gateZonePath[i]);
     }
+    System.out.println("hi2");
     // int gatesLeft;
     // do {
     //   gatesLeft = 0;
@@ -43,6 +44,7 @@ public abstract class BestPath {
     for (int i = 0; i < points.size() - 1; i++){
       totalDistance += points.get(i).distance(points.get(i+1));
     }
+    System.out.println("hi3");
     for (int i = 0; i < points.size(); i++){
       Point2D.Double scaledPoint = new Point2D.Double(points.get(i).getX()*Constants.fieldSquareLength,points.get(i).getY()*Constants.fieldSquareLength);
       path.add(scaledPoint);
