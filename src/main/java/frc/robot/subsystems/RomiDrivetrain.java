@@ -54,11 +54,12 @@ public class RomiDrivetrain extends SubsystemBase {
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate, false);
+    System.out.println("movement speed: " + xaxisSpeed);
   }
 
   // Speed in meters/second
-  public void drive(double speed) {
-    arcadeDrive(speed * 1.81891365, 0);
+  public void drive(double speed, double zaxisRotate) {
+    arcadeDrive(speed * 1.81891365, zaxisRotate);
   }
 
   public void stop() {
@@ -90,7 +91,7 @@ public class RomiDrivetrain extends SubsystemBase {
   public void resetOdometry() {
     gyro.reset();
     resetEncoders();
-    odometer.resetPosition(null, 0, 0, Constants.startingPose);
+    odometer.resetPosition(getAbsoluteAngle(), 0, 0, Constants.startingPose);
   }
 
   public Pose2d getPose() {

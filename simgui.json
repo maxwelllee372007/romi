@@ -6,8 +6,20 @@
       }
     },
     "Encoders": {
+      "0": {
+        "header": {
+          "open": true
+        }
+      },
       "window": {
         "visible": true
+      }
+    },
+    "Other Devices": {
+      "RomiGyro": {
+        "header": {
+          "open": true
+        }
       }
     },
     "PWM Outputs": {
@@ -31,9 +43,6 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "transitory": {
       "LiveWindow": {
         ".status": {

@@ -27,7 +27,7 @@ public class RunBestPath extends CommandBase {
   private Timer startTime;
   private ArrayList<Point2D.Double> path;
   private double totalDistance, distanceRemaining;
-  private int currentIndex = 0;
+  private int currentIndex = 1;
 
   /**
    * Creates a new ExampleCommand.
@@ -53,20 +53,28 @@ public class RunBestPath extends CommandBase {
       start = true;
       startTime = new Timer();
       startTime.start();
-      var temp = BestPath.getBestPath(Constants.Runtime.gateZones, null, null, Constants.Runtime.time);
+      var temp = BestPath.getBestPath(Constants.Runtime.gateZonePath, Constants.Runtime.start, Constants.Runtime.end, Constants.Runtime.time);
       path = temp.getFirst();
+      System.out.println(path);
       totalDistance = temp.getSecond();
       distanceRemaining = totalDistance;
     }
     if (start) {
       Point2D target = path.get(currentIndex);
       Translation2d target2 = new Translation2d(target.getX(), target.getY());
-      Translation2d dist = m_subsystem.getPose().getTranslation().minus(target2);
+      Translation2d dist = m_subsystem.getPose().getTranslation().minus(target2).div(-1);
       if (dist.getNorm() < 0.05) {
         currentIndex++;
+        var temp = m_subsystem.getPose().getTranslation();
+        System.out.println("Turning\nx: " + temp.getX() + " y: " + temp.getY());
       } else {
         double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
-        m_subsystem.arcadeDrive(.5, angleDiff * Constants.turningScale);
+        double setZ = angleDiff * Constants.turningScale;
+        m_subsystem.drive(totalDistance/Constants.Runtime.time, setZ);
+        m_subsystem.arcadeDrive(0.5, setZ);
+        System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
+        System.out.println("x: "+dist.getX()+" y: "+dist.getY());
+        System.out.println("set Z:" + setZ);
       }
 
     }
