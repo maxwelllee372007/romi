@@ -67,7 +67,6 @@ public class RunBestPath extends CommandBase {
         currentIndex++;
         var temp = m_subsystem.getPose().getTranslation();
         System.out.println("Turning\nx: " + temp.getX() + " y: " + temp.getY());
-      } else if (bigTurn) {
       }else {
         double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
         double setZ = angleDiff * Constants.turningScale;
