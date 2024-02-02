@@ -111,10 +111,10 @@ public final class Constants {
     //     yes(3.5, 3.5) };
     // public static boolean gateZones[][] =
     // {gateZoneRow0,gateZoneRow1,gateZoneRow2,gateZoneRow3};
-    public static String basePath = "IN U R D U R U U L D U L R"; 
-    public static double time = 60;
+    public static String basePath = "IN R D L R U L D"; 
+    public static double time = 25;
     public static Point2D.Double start = new Point2D.Double(.5, startingOffset);
-    public static Point2D.Double end = new Point2D.Double(1.5, 3.5);
+    public static Point2D.Double end = new Point2D.Double(.5, .5);
     public static double wallDistMeters = Runtime.start.getX() / 2;
     public static Pose2d startingPose = new Pose2d(new Translation2d(wallDistMeters, startingOffset),
         new Rotation2d(.5 * Math.PI));
@@ -129,6 +129,6 @@ public final class Constants {
   public static double startingOffset = -0.08;
   public static double fieldSquareLength = 0.5;
   public static double turningScale = 0.5;
-  public static double maxTurningSpeed = 0.35;
+  public static double maxTurningSpeed = 0.25;
 
 }

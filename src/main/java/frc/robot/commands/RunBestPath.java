@@ -48,6 +48,7 @@ public class RunBestPath extends CommandBase {
   public void execute() {
     if (!startRunning && m_subsystem.getButton()) {
       startTime = new Timer();
+      startTime.reset();
       startTime.start();
       String dirs = Constants.Runtime.basePath;
       var gateZonePath = Constants.conversion(dirs);
@@ -58,6 +59,7 @@ public class RunBestPath extends CommandBase {
       totalDistance = temp.getSecond();
       distanceRemaining = totalDistance;
       startRunning = true;
+      m_subsystem.resetOdometry();
     }
     if (startRunning && !m_subsystem.getButton()) {
       Point2D target = path.get(currentIndex);
@@ -72,11 +74,18 @@ public class RunBestPath extends CommandBase {
         double setZ = angleDiff * Constants.turningScale;
         setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
         // setZ = Math.abs(setZ) > Constants.maxTurningSpeed && setZ < 0 ? -Constants.maxTurningSpeed : (Math.abs(setZ) > Constants.turningScale && setZ > 0) ? ;
-        m_subsystem.drive((8.0/6.0)*totalDistance/Constants.Runtime.time, setZ);
+        double speed = (7.5/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 0.7) - startTime.get());
+        // if (Math.abs(setZ) == Constants.maxTurningSpeed ) {
+        //   speed *= 0.8;
+        // }
+        speed = MathUtil.clamp(speed, 0.05
+        , 0.75);
+        m_subsystem.drive(speed, setZ);
         // m_subsystem.arcadeDrive(0.5, setZ);
         // System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
         // System.out.println("x: "+dist.getX()+" y: "+dist.getY());
         // System.out.println("set Z:" + setZ);
+        System.out.println("time:" + startTime.get() + "speed:" + speed);
       }
 
     }
