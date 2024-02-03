@@ -74,7 +74,7 @@ public class RunBestPath extends CommandBase {
         double setZ = angleDiff * Constants.turningScale;
         setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
         // setZ = Math.abs(setZ) > Constants.maxTurningSpeed && setZ < 0 ? -Constants.maxTurningSpeed : (Math.abs(setZ) > Constants.turningScale && setZ > 0) ? ;
-        double speed = (7.5/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 0.7) - startTime.get());
+        double speed = (7.5/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 3.0) - startTime.get());
         // if (Math.abs(setZ) == Constants.maxTurningSpeed ) {
         //   speed *= 0.8;
         // }
