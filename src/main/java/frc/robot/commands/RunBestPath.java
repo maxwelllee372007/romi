@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -67,6 +68,7 @@ public class RunBestPath extends CommandBase {
       Translation2d dist = m_subsystem.getPose().getTranslation().minus(target2).div(-1);
       if (dist.getNorm() < 0.05) {
         currentIndex++;
+        bigTurn = Math.abs(path.get(currentIndex - 2).distance(path.get(currentIndex))) < 0.1;
         var temp = m_subsystem.getPose().getTranslation();
         System.out.println("Turning\nx: " + temp.getX() + " y: " + temp.getY());
       }else {
@@ -74,10 +76,11 @@ public class RunBestPath extends CommandBase {
         double setZ = angleDiff * Constants.turningScale;
         setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
         // setZ = Math.abs(setZ) > Constants.maxTurningSpeed && setZ < 0 ? -Constants.maxTurningSpeed : (Math.abs(setZ) > Constants.turningScale && setZ > 0) ? ;
-        double speed = (7.5/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 3.0) - startTime.get());
-        // if (Math.abs(setZ) == Constants.maxTurningSpeed ) {
-        //   speed *= 0.8;
-        // }
+        double speed = (7.0/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 4.0) - startTime.get());
+        if (bigTurn) {
+          // speed *= 0.1;
+          speed *= (Math.abs(Units.radiansToDegrees(angleDiff) - 90))/90;
+        }
         speed = MathUtil.clamp(speed, 0.05
         , 0.75);
         m_subsystem.drive(speed, setZ);
@@ -85,7 +88,7 @@ public class RunBestPath extends CommandBase {
         // System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
         // System.out.println("x: "+dist.getX()+" y: "+dist.getY());
         // System.out.println("set Z:" + setZ);
-        System.out.println("time:" + startTime.get() + "speed:" + speed);
+        System.out.println("time:" + Math.round(startTime.get()) + "speed:" + speed);
       }
 
     }
