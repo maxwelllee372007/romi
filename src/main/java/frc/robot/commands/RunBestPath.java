@@ -75,10 +75,8 @@ public class RunBestPath extends CommandBase {
         double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
         double setZ = angleDiff * Constants.turningScale;
         setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
-        // setZ = Math.abs(setZ) > Constants.maxTurningSpeed && setZ < 0 ? -Constants.maxTurningSpeed : (Math.abs(setZ) > Constants.turningScale && setZ > 0) ? ;
         double speed = (7.0/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 4.0) - startTime.get()); // TODO: tune
         if (bigTurn) {
-          // speed *= 0.1;
           speed *= MathUtil.clamp(
             (Units.radiansToRotations(Math.abs(angleDiff))/0.25)
                - 1, 
@@ -88,11 +86,10 @@ public class RunBestPath extends CommandBase {
         speed = MathUtil.clamp(speed, 0.05
         , 0.75);
         m_subsystem.drive(speed, setZ);
-        // m_subsystem.arcadeDrive(0.5, setZ);
         // System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
         // System.out.println("x: "+dist.getX()+" y: "+dist.getY());
         // System.out.println("set Z:" + setZ);
-        System.out.println("time:" + Math.round(startTime.get()) + "speed:" + speed);
+        System.out.println("time:" + Math.round(startTime.get()*10)/10 + "; speed:" + speed);
       }
 
     }
