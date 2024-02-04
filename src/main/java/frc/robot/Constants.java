@@ -114,7 +114,7 @@ public final class Constants {
     public static String basePath = "IN U U D R L U D R R D L"; 
     public static double time = 36;
     public static Point2D.Double start = new Point2D.Double(1.5, startingOffset);
-    public static Point2D.Double end = new Point2D.Double(3.5, 1.5);
+    // public static Point2D.Double end = new Point2D.Double(3.5, 1.5);
     public static double wallDistMeters = Runtime.start.getX() / 2;
     public static Pose2d startingPose = new Pose2d(new Translation2d(wallDistMeters, startingOffset),
         new Rotation2d(.5 * Math.PI));
