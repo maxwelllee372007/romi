@@ -11,6 +11,11 @@
           "open": true
         }
       },
+      "1": {
+        "header": {
+          "open": true
+        }
+      },
       "window": {
         "visible": true
       }
@@ -55,6 +60,36 @@
           "open": true
         },
         "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "visible": true
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 332
+        }
+      ],
+      "window": {
+        "visible": false
       }
     }
   }

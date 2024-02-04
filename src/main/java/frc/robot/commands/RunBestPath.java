@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -26,6 +29,7 @@ public class RunBestPath extends CommandBase {
   private double totalDistance, distanceRemaining;
   private int currentIndex = 1;
   private boolean bigTurn = false;
+  private NetworkTableEntry time = new NetworkTableEntry(NetworkTableInstance.getDefault(), 0);
 
   /**
    * Creates a new ExampleCommand.
@@ -71,7 +75,7 @@ public class RunBestPath extends CommandBase {
         bigTurn = Math.abs(path.get(currentIndex - 2).distance(path.get(currentIndex))) < 0.1;
         var temp = m_subsystem.getPose().getTranslation();
         System.out.println("Turning\nx: " + temp.getX() + " y: " + temp.getY());
-      }else {
+      } else {
         double angleDiff = dist.getAngle().minus(m_subsystem.getAbsoluteAngle()).getRadians();
         double setZ = angleDiff * Constants.turningScale;
         setZ = MathUtil.clamp(setZ, -Constants.maxTurningSpeed, Constants.maxTurningSpeed);
@@ -83,16 +87,15 @@ public class RunBestPath extends CommandBase {
             0, 
             1); // TODO: tune
         }
-        speed = MathUtil.clamp(speed, 0.05
-        , 0.75);
+        speed = MathUtil.clamp(speed, 0.05, 0.75);
         m_subsystem.drive(speed, setZ);
         // System.out.println("Gyro angle:" + m_subsystem.getAbsoluteAngle().getDegrees());
         // System.out.println("x: "+dist.getX()+" y: "+dist.getY());
         // System.out.println("set Z:" + setZ);
         System.out.println("time:" + Math.round(startTime.get()*10)/10 + "; speed:" + speed);
       }
-
     }
+    time.setDouble(startTime.get());
   }
 
   // Called once the command ends or is interrupted.
