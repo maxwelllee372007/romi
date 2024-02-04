@@ -57,7 +57,7 @@ public class RunBestPath extends CommandBase {
       startTime.start();
       String dirs = Constants.Runtime.basePath;
       var gateZonePath = Constants.conversion(dirs);
-      var temp = BestPath.getBestPath(gateZonePath, Constants.Runtime.start, Constants.Runtime.time);
+      var temp = BestPath.getBestPath(gateZonePath, Constants.Runtime.start, Constants.Runtime.end, Constants.Runtime.time);
       System.out.println(temp);
       path = temp.getFirst();
       System.out.println(path);

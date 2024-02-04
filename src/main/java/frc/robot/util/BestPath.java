@@ -8,7 +8,7 @@ import frc.robot.Constants;
 
 
 public abstract class BestPath {
-  public static Pair<ArrayList<Point2D.Double>,Double> getBestPath(Point2D.Double gateZonePath[], Point2D.Double start, double time){
+  public static Pair<ArrayList<Point2D.Double>,Double> getBestPath(Point2D.Double gateZonePath[], Point2D.Double start, Point2D.Double end, double time){
     ArrayList<Point2D.Double> path = new ArrayList<Point2D.Double>();
     ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
     points.add((Point2D.Double) start.clone());
@@ -39,7 +39,7 @@ public abstract class BestPath {
     //     points.add(nextPoint);
     //   }
     // } while (gatesLeft - 1 > 0);
-    // points.add(end);
+    points.add(end);
     double totalDistance = 0;
     for (int i = 0; i < points.size() - 1; i++){
       totalDistance += points.get(i).distance(points.get(i+1));
