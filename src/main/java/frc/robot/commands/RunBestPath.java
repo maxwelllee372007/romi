@@ -82,10 +82,9 @@ public class RunBestPath extends CommandBase {
         double speed = (7.0/6.0)*(totalDistance - (((currentIndex) * Constants.fieldSquareLength) - dist.getNorm()))/((Constants.Runtime.time + 4.0) - startTime.get()); // TODO: tune
         if (bigTurn) {
           speed *= MathUtil.clamp(
-            (Units.radiansToRotations(Math.abs(angleDiff))/0.25)
-               - 1, 
-            0, 
-            1); // TODO: tune
+            (Units.radiansToRotations(Math.abs(angleDiff))*4.0) - 1.0, 
+            0.0, 
+            1.0); // TODO: tune
         }
         speed = MathUtil.clamp(speed, 0.05, 0.75);
         m_subsystem.drive(speed, setZ);
@@ -95,7 +94,7 @@ public class RunBestPath extends CommandBase {
         System.out.println("time:" + Math.round(startTime.get()*10)/10 + "; speed:" + speed);
       }
     }
-    time.setDouble(startTime.get());
+    // time.setDouble(startTime.get());
   }
 
   // Called once the command ends or is interrupted.
